@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <script src="/bootstrap/js/jquery-3.4.1.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <title>Main Page</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row" style="text-align: center; margin-top: 50px;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        {% if user %}
+                        <h5 class="card-title">Welcome to the application</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{name}}</h6>
+                        <p class="card-text">This website is a basic task management webiste you can logout or proceed to view your task boards.</p>
+                        <a href="{{logout}}" class="card-link">Logout</a>
+                        <a href="#" class="card-link">My Taskboards</a>
+                        {% else %}
+                        <h5 class="card-title">Welcome to the application</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Guest</h6>
+                        <p class="card-text">This website is a basic task management webiste you can login to proceed to view your task boards.</p>
+                        <a href="{{login}}" class="card-link">Login</a>
+                        {% endif %}
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>    
+</body>
+</html>
