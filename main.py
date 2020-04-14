@@ -30,13 +30,10 @@ class Scheduler(webapp2.RequestHandler):
         if user:
             nickname = user.nickname()
             
-            all_users = User.query().fetch()
-            existing_users = []
-            for user in all_users:
-                existing_users.append(user.email)
-            if nickname not in existing_users:
-                new = User(email = nickname)
-                User.put(new)
+            key = ndb.Key(User, nickname)
+            if key.get() == None:
+                new = User(id=nickname,email=nickname)
+                new.put()
             
             logout_url = users.create_logout_url('/')
             template_values = {
