@@ -1,9 +1,8 @@
 from google.appengine.ext import ndb
 
-
 class User(ndb.Model):
     email = ndb.StringProperty()
-
+    boards = ndb.JsonProperty()
 class Task(ndb.Model):
     title = ndb.StringProperty()
     due_date = ndb.DateTimeProperty()
@@ -15,4 +14,5 @@ class TaskBoard(ndb.Model):
     owner = ndb.StructuredProperty(User, repeated = False)
     tasks = ndb.StructuredProperty(Task, repeated = True)
     users = ndb.StructuredProperty(User, repeated = True)
+    
 

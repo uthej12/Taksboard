@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>Main Page</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark navbar-expand-lg " style="padding: 0px 10px 0px 10px;background-color: #43548c;">
+        <div class="row" style="width: 100%;">
+            <div class="col-4" >
+                <a class = "navbar-brand" href="/">TaskBoard</a>
+            </div>
+            <div class="col-4" style="text-align: center;">
+                <a class = "navbar-brand" href="#" style="margin: auto;">{{Data.title}}</a>
+            </div>
+            <div class="col-4" style="text-align: right;">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbaroptions" aria-controls="navbaroptions" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbaroptions">
+                    {% if user == false %}
+                    <div class="ml-auto mr-0"> 
+                        <a class="btn btn-outline-primary my-2 my-sm-0" type="submit" href = "{{login}}">
+                            Login
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="nav-item dropdown ml-auto mr-0 uname"> 
+                        <a class="nav-link dropdown-toggle" href="#" id="logoutOption" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{name}}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="logoutOption">
+                        <a class="dropdown-item" href="{{logout}}" style="color: black;">Logout</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>  
+    
+    <div class="container-fluid">
+        <div class="row" style="background-color: #f3f3f3; margin: 0px 15px; padding: 10px;">
+            <h4 style="font-weight: 400;">{{Data.title}}</h4>
+            <div class="ml-auto mr-1">
+                <button class="btn btn-outline-primary" style="width: 100px;">Details</button>
+                <button class="btn btn-outline-primary" style="width: 100px;">Invite</button>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" style="padding: 30px;">
+        <div class="row" style="padding-top: 30px; width: 100%;">
+            {% for board in Data.board %}
+            <div class="col-12 col-sm-3 my-3">
+                <div class="card" style="height: 300px ; width: 100%; padding: 10px;">
+
+                </div>
+            </div>
+            {%endfor%}
+            <div class="col-12 col-sm-3 my-3">
+                <a  href="#" class="card add-task" style="height: 100px ; width: 100px; padding: 10px; text-align: center;">
+                    <img class="card-img mx-auto" src="/image/plus.png" alt="ADD TASK" style="width: 80%;height: 90%;">
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+      <div class="row footer">
+        <div class="container">
+            <hr class="my-0">
+            <div class="text-muted" style="text-align: center;">
+                TaskBoard
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/bootstrap/js/jquery-3.4.1.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+
+</body>
+</html>

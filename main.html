@@ -5,32 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <script src="/bootstrap/js/jquery-3.4.1.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.js"></script>
     <title>Main Page</title>
 </head>
-<body>
-    <div class="container">
-        <div class="row" style="text-align: center; margin-top: 50px;">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        {% if user %}
-                        <h5 class="card-title">Welcome to the application</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{name}}</h6>
-                        <p class="card-text">This website is a basic task management webiste you can logout or proceed to view your task boards.</p>
-                        <a href="{{logout}}" class="card-link">Logout</a>
-                        <a href="#" class="card-link">My Taskboards</a>
-                        {% else %}
-                        <h5 class="card-title">Welcome to the application</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Guest</h6>
-                        <p class="card-text">This website is a basic task management webiste you can login to proceed to view your task boards.</p>
-                        <a href="{{login}}" class="card-link">Login</a>
-                        {% endif %}
-                    </div>
-                  </div>
+<body class="main-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="container heading" >
+                <h1 class="title"><a href = "#">TaskBoard</a></h1>
+                <h5><a href="#">Home</a></h5>
+                <hr class="my-4">
             </div>
         </div>
-    </div>    
+        <div class="row">
+            <div class="container intro">
+                <div class="row" style="padding-bottom: 150px;">
+                    <div class="col-12">
+                        <h2 class="display-4">Welcome!</h2>
+                        {% if user %}
+                        <p>Hello {{name}}, welcome to TaskBoard application. You can access your dashboards by cliking the button below.</p>
+                        {% else %}
+                        <p>Hello, Guest welcome to TaskBoard Application You cna login by clicking the button below.</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-12" style="padding: 40px;">
+                        <div class="row">
+                            {% if user %}
+                            <div class="col-6" style="text-align: right;">
+                                <a class = "btn btn-outline-primary" style ="width: 150px;" href="/dashboard">Dashboard</a>
+                            </div>
+                            <div class="col-6" style="text-align: left;">
+                                <a class = "btn btn-outline-primary" style ="width: 150px;" href="{{logout}}">Logout</a>
+                            </div>
+                            {% else %}
+                            <div class="col">
+                                <a class = "btn btn-outline-primary" style="width: 100px;" href="{{login}}">Login</a>
+                            </div>
+                            {%endif%}
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container">
+                <hr class="my-0">
+                <div class="text-muted" style="text-align: center;">
+                    TaskBoard
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/bootstrap/js/jquery-3.4.1.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>

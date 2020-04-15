@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>Main Page</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark navbar-expand-lg " style="padding: 0px 10px 0px 10px;background-color: #43548c;">
+        <a class = "navbar-brand" href="/">TaskBoard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbaroptions" aria-controls="navbaroptions" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbaroptions">
+            {% if user == false %}
+            <div class="ml-auto mr-0"> 
+                <a class="btn btn-outline-primary my-2 my-sm-0" type="submit" href = "{{login}}">
+                    Login
+                </a>
+            </div>
+            {% else %}
+            <div class="nav-item dropdown ml-auto mr-0 uname"> 
+                <a class="nav-link dropdown-toggle" href="#" id="logoutOption" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{name}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="logoutOption">
+                  <a class="dropdown-item" href="{{logout}}" style="color: black;">Logout</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </nav>   
+    
+    <div class="container" style="border-right: 1px solid #f3f3f3; height: 600px; border-left: 1px solid #f3f3f3;">
+        <div class="row" style="padding-top: 50px; text-align: center;">
+            <div class="col">
+                <h4 style="font-weight: 350;">DASHBOARD</h4>
+            </div>
+        </div>
+        <hr>
+        <div class="row" style="padding: 20px; text-align: center;">
+            <div class="container" style="text-align: center; padding: 20px;">
+                <div class="row">
+                    {% if boards|length == 0 %}
+                        <p class="text-muted">You have no active boards, you can create one by clicking the button below.</p>
+                    {%else%}
+                        {% for key in boards %}
+                            <div class="col-12 col-sm-6" style="margin-bottom: 20px;">
+                                <a href="/taskBoard?key={{key.urlsafe()}}" style="color: #43548c;">
+                                    <div class="card task-board">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ key.get().title }}</h5>
+                                            <p class="text-muted">{{key.get().owner.email}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="row" style="text-align: center; padding: 50px;">
+                    <div class="col">
+                        <button type="submit" value="new_board" class="btn btn-success m-auto" data-toggle="modal" data-target="#addBoard"> New TaskBoard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addBoard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Create a new Task Board</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form class='needs-validation' action="/dashboard" method="POST" novalidate>
+                <div class="form-group">
+                    <input type="text" class="form-control ml-auto" id="title" name="title" placeholder="Enter Title Of Board" required min=3>
+                    <div class='invalid-feedback'>Enter valid Title</div>
+                </div>
+                    <button type="button mx-auto" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-outline-primary" value = "Add">Submit</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row footer">
+        <div class="container">
+            <hr class="my-0">
+            <div class="text-muted" style="text-align: center;">
+                TaskBoard
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/bootstrap/js/jquery-3.4.1.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script>
+        var form = document.querySelector('.needs-validation');
+
+        form.addEventListener('submit', function(event){
+            if(form.checkValidity() === false){
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+        
+    </script>
+</body>
+</html>

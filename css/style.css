@@ -1,4 +1,93 @@
+html {
+    height: 100%;
+}
+body {
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
 .card{
     background-color: #f3f3f3;
     box-shadow: inset;
+}
+.login-button{
+    text-decoration: none ;
+    color: black;
+    width: 100px;
+    background-color: white;
+}
+.custom-nav{
+    background-color: #1d2f43;
+}
+.heading{
+    margin-top: 1em;
+    color: #1d2f43;
+}
+.title{
+    display: inline;
+}
+.heading h5{
+    display: inline;
+    margin-left: 70%;
+    text-decoration: underline;
+}
+@media screen and (min-width: 0px) and (max-width: 1000px) {
+    .heading h5 { display: none; }
+    .heading{ text-align: center;}
+  }
+.heading a{
+    color: #1d2f43;
+}
+.heading a:hover{
+    color:#5F9EA0;
+    text-decoration: none;
+}
+.intro{
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.uname a{
+    color: white;
+}
+.uname a:hover{
+    color: #5F9EA0;
+}
+.tb-button{
+    border-color: #43548c;
+}
+.tb-button:hover{
+    background-color: #43548c;
+    color: white;
+}
+.task-board{
+    transition: 0.2;
+    width: 90%;
+    padding: 30px; 
+    display: inline-block; 
+    border-color: #43548c;
+    background-color: #f3f3f3;
+}
+.task-board:hover{
+    transform: scale(1.05); 
+    border: 2px solid #43548c;
+    color: #5F9EA0;       
+}
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+  }
+.add-task{
+    transition: 0.2;
+}
+.add-task:hover{
+    transform: scale(1.05);
 }
