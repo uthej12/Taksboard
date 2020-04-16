@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/all.css">
     <title>Main Page</title>
 </head>
 <body>
     <nav class="navbar navbar-dark navbar-expand-lg " style="padding: 0px 10px 0px 10px;background-color: #43548c;">
         <div class="row" style="width: 100%;">
             <div class="col-4" >
-                <a class = "navbar-brand" href="/">TaskBoard</a>
+                <a class = "navbar-brand" href="/dashboard">Dashboard</a>
             </div>
             <div class="col-4" style="text-align: center;">
                 <a class = "navbar-brand" href="#" style="margin: auto;">{{Data.title}}</a>
@@ -43,44 +44,240 @@
     </nav>  
     
     <div class="container-fluid">
-        <div class="row" style="background-color: #f3f3f3; margin: 0px 15px; padding: 10px;">
-            <h4 style="font-weight: 400;">{{Data.title}}</h4>
-            <div class="ml-auto mr-1">
-                <button class="btn btn-outline-primary" style="width: 100px;">Details</button>
-                <button class="btn btn-outline-primary" style="width: 100px;">Invite</button>
+        <div class="row" style="margin: 0px 15px; padding: 10px; background-color: #f3f3f3;">
+            <div class="title_bar col-sm-5">
+                <h4 style="font-weight: 400; display: inline;">
+                    {{Data.title}} 
+                    <sub class="owner_name">
+                        <h6 class="text-muted" style="font-weight: 400; display: inline; font-size: small;">
+                            created by {{Data.owner.email}}
+                        </h6>
+                    </sub>
+                </h4>
             </div>
-        </div>
-    </div>
-    <div class="container-fluid" style="padding: 30px;">
-        <div class="row" style="padding-top: 30px; width: 100%;">
-            {% for board in Data.board %}
-            <div class="col-12 col-sm-3 my-3">
-                <div class="card" style="height: 300px ; width: 100%; padding: 10px;">
-
+            
+            <div class="ml-auto mr-0 col-sm-5 title_bar" style="text-align: right;">
+                <div class="ml-auto mr-0">
+                    <button data-toggle="modal" data-target="#details" class="btn btn-outline-primary" style="width: 100px;">Details</button>
+                    <button data-toggle="modal" data-target="#invite" class="btn btn-outline-primary" style="width: 100px;">Invite</button>
                 </div>
             </div>
+        </div>
+    </div>
+    {% if Error|length > 1 %}
+    <div class="container mt-1 mb-0">
+      <div class="row" style="width: 100%;text-align: center;">
+          <div class="alert mx-auto alert-danger alert-dismissible fade show" role="alert" style="width: 50%; height: 30px; padding: 0%;">
+              {{Error}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="padding: 0px 10px;">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if Success|length > 1 %}
+    <div class="container mt-1 mb-0" style="width: 100%;text-align: center;">
+      <div class="row">
+          <div class="alert mx-auto alert-success alert-dismissible fade show" role="alert" style="width: 50%; height: 30px; padding: 0%;">
+              {{Success}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="padding: 0px 10px;">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+      </div>
+    </div>
+    {% endif %}
+    <div class="container" style="padding: 30px; padding-top: 10px;">
+        <div class="row" >
+            <h4 class="mx-auto" style="font-weight: 400;">Tasks</h4>
+        </div>
+        <hr>
+        <div class="row" style="padding-top: 30px; width: 100%;">
+            {% for task in Data.tasks %}
+            <div class="col-lg-4 col-sm-12 col-md-6 my-3">
+                <div class="card" style="margin:auto; width: 18rem;height: 200px; border-color: #43548c;">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ task.title }}</h5>
+                      <h6 class="card-subtitle mb-2 text-muted">{{task.user.email}}</h6>
+                      <p class="card-text">{{task.description}}</p>
+                      <p class="card-text">Due on: {{task.due_date.strftime('%Y-%m-%d')}}</p>
+                        <div class="form-check">
+                        {%if task.status == 'False' %}
+                        <input type="checkbox" class="form-check-input" id="status" disabled>
+                        {% else %}
+                        <input type="checkbox" class="form-check-input" id="status" disabled checked>
+                        {% endif %}
+                        <label class="form-check-label" for="status">Status</label>
+                        </div>
+                    </div>
+                  </div>
+            </div>
             {%endfor%}
-            <div class="col-12 col-sm-3 my-3">
-                <a  href="#" class="card add-task" style="height: 100px ; width: 100px; padding: 10px; text-align: center;">
-                    <img class="card-img mx-auto" src="/image/plus.png" alt="ADD TASK" style="width: 80%;height: 90%;">
-                </a>
+            <div class="col-12 col-sm-4 my-3" style="width: 100%;height: 200px;display: flex; justify-content: center;">
+                <div class="my-auto">
+                    <a href="#" data-toggle="modal" data-target="#addTask" class="card add-task mx-auto" style="height: 100px ; width: 100px; padding: 10px;">
+                        <img class="card-img mx-auto" src="/image/plus.png" alt="ADD TASK" style="width: 80%;height: 90%;">
+                    </a>
+                </div>
             </div>
         </div>
     </div>
+
     
-    
-      <div class="row footer">
-        <div class="container">
-            <hr class="my-0">
-            <div class="text-muted" style="text-align: center;">
-                TaskBoard
+  
+    <div class="row footer">
+      <div class="container">
+          <hr class="my-0">
+          <div class="text-muted" style="text-align: center;">
+              TaskBoard
+          </div>
+      </div>
+  </div>
+  <div class="modal fade" id="details" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #43548c; color: white;">
+          <h5 class="modal-title" id="exampleModalLabel">{{Data.title}} Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    Title
+                </div>
+                <div class="col-12 col-sm-6">
+                    <p style="color: #43548c;">{{Data.title}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    Owner
+                </div>
+                <div class="col-12 col-sm-6">
+                    <p style="color: #43548c;">{{Data.owner.email}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    Number of tasks
+                </div>
+                <div class="col-12 col-sm-6">
+                    <p style="color: #43548c;">{{Data.tasks | length}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    Participants
+                </div>
+                <div class="col-12 col-sm-6">
+                    {% for user in Data.users %}
+                    <div class="row"> 
+                        <p style="color: #43548c;">{{user.email}}</p><br>
+                    </div>
+                    {%endfor%}
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="modal fade" id="addTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #43548c; color: white;">
+                    <h5 class="modal-title">Add new Task</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class='needs-validation' action="/taskBoard?key={{Data.key.urlsafe()}}" method="POST" novalidate>
+                        <div class="form-group">
+                            <div class="form-group row" style="padding-right: 15px;" >
+                                <label for="title" class="col-sm-3 col-form-label">Title</label>
+                                <input type="text" class="form-control col-sm-7 ml-auto" id="title" name="title" placeholder="Task Name" required min=3>
+                                <div class='invalid-feedback'>Enter valid Title</div>
+                            </div>
+                            <div class="form-group row" style="padding-right: 15px;">
+                                <label for="dueDate" class="col-sm-3 col-form-label">Due Date</label>
+                                <input class="form-control col-sm-7 ml-auto" type="date" name="dueDate" max="3000-12-31" min="2020-01-01" required>
+                                <div class='invalid-feedback'>Enter valid Date</div>
+                            </div>
+                            <div class="form-group row" style="padding-right: 15px;" >
+                                <label for="description" class="col-12 col-form-label">Description</label>
+                                <div class="col-12">
+                                    <textarea class="col-12 form-control" name="description" id="description" cols="10" rows="5" required></textarea>
+                                </div>
+                                <div class='invalid-feedback'>Enter valid Description(min 5)</div>
+                            </div>
+                            <div class="form-group row" style="padding-right: 15px;" >
+                                <label for="users" class="col-sm-3 col-form-label">Assigned to</label>
+                                <select name="user" id="user" class="form-control col-sm-7 ml-auto">
+                                    {% for user in Data.users %}
+                                    <option value="{{user.email}}">{{user.email}}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class='invalid-feedback'>Enter valid Title</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary" name="perform_action" value = "Add">Submit</button>
+                        <button type="button mx-auto" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+      </div>
+
+
+      <div class="modal fade" id="invite" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #43548c; color: white;">
+                    <h5 class="modal-title">Invite users to TaskBoard</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class='needs-validation' action="/taskBoard?key={{Data.key.urlsafe()}}" method="POST" novalidate>
+                        <div class="form-group">
+                            <div class="form-group row" style="padding-right: 15px;" >
+                                <label for="invite_user" class="col-sm-3 col-form-label">User email</label>
+                                <input type="email" class="form-control col-sm-7 ml-auto" id="invite_user" name="invite_user" placeholder="Email">
+                                <div class='invalid-feedback'>Enter valid email</div>
+                            </div>
+                        <button type="submit" class="btn btn-outline-primary" name="perform_action" value = "invite">Submit</button>
+                        <button type="button mx-auto" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
 
 
     <script src="/bootstrap/js/jquery-3.4.1.min.js"></script>
     <script src="/bootstrap/js/bootstrap.js"></script>
+    <script>
+        var form = document.querySelector('.needs-validation');
 
+        form.addEventListener('submit', function(event){
+            if(form.checkValidity() === false){
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+        
+    </script>
 </body>
 </html>

@@ -8,6 +8,7 @@ class Task(ndb.Model):
     due_date = ndb.DateTimeProperty()
     status = ndb.StringProperty()
     user = ndb.StructuredProperty(User, repeated = False)
+    description = ndb.StringProperty()
 
 class TaskBoard(ndb.Model):
     title = ndb.StringProperty()

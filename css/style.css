@@ -35,6 +35,13 @@ body {
 @media screen and (min-width: 0px) and (max-width: 1000px) {
     .heading h5 { display: none; }
     .heading{ text-align: center;}
+    .owner_name{display: none; }
+    
+  }
+  @media screen and (min-width: 0px) and (max-width: 650px){
+    .title_bar{
+        text-align: center !important;
+    }
   }
 .heading a{
     color: #1d2f43;
