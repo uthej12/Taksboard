@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/bootstrap/css/all.css">
     <title>Main Page</title>
 </head>
 <body>
     <nav class="navbar navbar-dark navbar-expand-lg " style="padding: 0px 10px 0px 10px;background-color: #43548c;">
         <div class="row" style="width: 100%;">
-            <div class="col-4" >
+            <div class="col-6" >
                 <a class = "navbar-brand" href="/dashboard">Dashboard</a>
             </div>
-            <div class="col-4" style="text-align: center;">
-                <a class = "navbar-brand" href="#" style="margin: auto;">{{Data.title}}</a>
-            </div>
-            <div class="col-4" style="text-align: right;">
+
+            <div class="col-6" style="text-align: right;">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbaroptions" aria-controls="navbaroptions" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -59,7 +56,9 @@
             <div class="ml-auto mr-0 col-sm-5 title_bar" style="text-align: right;">
                 <div class="ml-auto mr-0">
                     <button data-toggle="modal" data-target="#details" class="btn btn-outline-primary" style="width: 100px;">Details</button>
+                    {% if  name == Data.owner.email %}
                     <button data-toggle="modal" data-target="#invite" class="btn btn-outline-primary" style="width: 100px;">Invite</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -67,9 +66,9 @@
     {% if Error|length > 1 %}
     <div class="container mt-1 mb-0">
       <div class="row" style="width: 100%;text-align: center;">
-          <div class="alert mx-auto alert-danger alert-dismissible fade show" role="alert" style="width: 50%; height: 30px; padding: 0%;">
+          <div class="alert mx-auto alert-danger alert-dismissible fade show" role="alert" style="width: 50%; height: 2rem; padding: 0%;">
               {{Error}}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="padding: 0px 10px;">
+              <button type="button" onclick='window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}"' class="close" aria-label="Close" style="padding: 0px 10px;">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -80,42 +79,67 @@
     {% if Success|length > 1 %}
     <div class="container mt-1 mb-0" style="width: 100%;text-align: center;">
       <div class="row">
-          <div class="alert mx-auto alert-success alert-dismissible fade show" role="alert" style="width: 50%; height: 30px; padding: 0%;">
+          <div class="alert mx-auto alert-success alert-dismissible fade show" role="alert" style="width: 50%; height: 2rem; padding: 0%;">
               {{Success}}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="padding: 0px 10px;">
+              <button type="button" class="close" onclick='window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}"' aria-label="Close" style="padding: 0px 10px;">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
       </div>
     </div>
     {% endif %}
-    <div class="container" style="padding: 30px; padding-top: 10px;">
-        <div class="row" >
-            <h4 class="mx-auto" style="font-weight: 400;">Tasks</h4>
+
+
+    <div class="container task-container">
+        <div class="row mt-2" >
+            <h3 class="mx-auto" style="font-weight: 300;">Tasks</h3>
         </div>
-        <hr>
+        <hr class="mt-0">
         <div class="row" style="padding-top: 30px; width: 100%;">
             {% for task in Data.tasks %}
             <div class="col-lg-4 col-sm-12 col-md-6 my-3">
-                <div class="card" style="margin:auto; width: 18rem;height: 200px; border-color: #43548c;">
+                <div class="card tasks">
+                    <div class="card-header">
+                        <h5 class="card-title">{{ task.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{task.user.email}}</h6>
+                    </div>
                     <div class="card-body">
-                      <h5 class="card-title">{{ task.title }}</h5>
-                      <h6 class="card-subtitle mb-2 text-muted">{{task.user.email}}</h6>
-                      <p class="card-text">{{task.description}}</p>
-                      <p class="card-text">Due on: {{task.due_date.strftime('%Y-%m-%d')}}</p>
-                        <div class="form-check">
-                        {%if task.status == 'False' %}
-                        <input type="checkbox" class="form-check-input" id="status" disabled>
-                        {% else %}
-                        <input type="checkbox" class="form-check-input" id="status" disabled checked>
+                        <p class="card-text task-text" style="margin-top: 0rem !important;">{{task.description}}</p>
+                        <hr style="margin-top: 0;">
+                        <p class="card-text task-text">
+                            Due: {{task.due_date.strftime('%d %b %Y')}}
+                        </p>
+                        <hr style="margin-top: 0;">
+                        {% if task.completion_date != None %}
+                        <p class="card-text task-text" style="color: green !important;">
+                            Completed: {{task.completion_date.strftime('%I:%m %p %d %b %Y')}}
+                        </p>
+                        <hr style="margin-top: 0;">
                         {% endif %}
-                        <label class="form-check-label" for="status">Status</label>
+                    </div>
+                    <div class="card-footer " style="padding-right:0.2rem;">
+                        <div class="form-check" style="display: inline;">
+                            {% if task.status == 'False' %}
+                            <a type="submit" name="toggle" value="toggle-task" >
+                                <input type="checkbox"  class="form-check-input status-change" name='status' data-id="{{task.title}}" value="{{task.title}}">
+                                <label class="form-check-label" for="status">Status</label>
+                            </a>
+                            {% else %}
+                            <a type="submit" name="toggle" value="toggle-task" >
+                                <input type="checkbox" class="form-check-input status-change" name='status' data-id="{{task.title}}" value="{{task.title}}" checked>
+                                <label class="form-check-label" for="status">Status</label>
+                            </a>
+                            {% endif %}
+                        </div>
+                        <div  style="display: inline; margin-left: 5rem;">
+                            <button class="btn btn-outline-secondary edit-task" value="{{task.title}}"><i class="fas fa-xs fa-edit"></i></button>
+                            <button class="btn btn-outline-danger delete-task" value ="{{task.title}}"><i class="far fa-xs fa-trash-alt"></i></button>
                         </div>
                     </div>
                   </div>
             </div>
             {%endfor%}
-            <div class="col-12 col-sm-4 my-3" style="width: 100%;height: 200px;display: flex; justify-content: center;">
+            <div class="col-12 col-sm-4 my-3" style="width: 100%;min-height: 250px;display: flex; justify-content: center;">
                 <div class="my-auto">
                     <a href="#" data-toggle="modal" data-target="#addTask" class="card add-task mx-auto" style="height: 100px ; width: 100px; padding: 10px;">
                         <img class="card-img mx-auto" src="/image/plus.png" alt="ADD TASK" style="width: 80%;height: 90%;">
@@ -125,22 +149,13 @@
         </div>
     </div>
 
-    
-  
-    <div class="row footer">
-      <div class="container">
-          <hr class="my-0">
-          <div class="text-muted" style="text-align: center;">
-              TaskBoard
-          </div>
-      </div>
-  </div>
-  <div class="modal fade" id="details" tabindex="-1" role="dialog">
+
+    <div class="modal fade " id="details" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #43548c; color: white;">
+      <div class="modal-content popup">
+        <div class="modal-header" >
           <h5 class="modal-title" id="exampleModalLabel">{{Data.title}} Details</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -191,12 +206,12 @@
     </div>
   </div>
 
-    <div class="modal fade" id="addTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade " id="addTask" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #43548c; color: white;">
+            <div class="modal-content popup">
+                <div class="modal-header">
                     <h5 class="modal-title">Add new Task</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -239,34 +254,143 @@
       </div>
 
 
-      <div class="modal fade" id="invite" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+      <div class="modal fade " id="invite" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content popup">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Invite users to TaskBoard</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class='needs-validation' action="/taskBoard?key={{Data.key.urlsafe()}}" method="POST" novalidate>
+                            <div class="form-group">
+                                <div class="form-group row" style="padding-right: 15px;" >
+                                    <label for="invite_user" class="col-sm-3 col-form-label">User email</label>
+                                    <input type="email" class="form-control col-sm-7 ml-auto" id="invite_user" name="invite_user" placeholder="Email">
+                                    <div class='invalid-feedback'>Enter valid email</div>
+                                </div>
+                            <button type="submit" class="btn btn-outline-primary" name="perform_action" value = "invite">Submit</button>
+                            <button type="button mx-auto" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade " id="confirmation" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #43548c; color: white;">
-                    <h5 class="modal-title">Invite users to TaskBoard</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+            <div class="modal-content popup">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                    <button type="button" class="close close-conf" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class='needs-validation' action="/taskBoard?key={{Data.key.urlsafe()}}" method="POST" novalidate>
-                        <div class="form-group">
-                            <div class="form-group row" style="padding-right: 15px;" >
-                                <label for="invite_user" class="col-sm-3 col-form-label">User email</label>
-                                <input type="email" class="form-control col-sm-7 ml-auto" id="invite_user" name="invite_user" placeholder="Email">
-                                <div class='invalid-feedback'>Enter valid email</div>
-                            </div>
-                        <button type="submit" class="btn btn-outline-primary" name="perform_action" value = "invite">Submit</button>
-                        <button type="button mx-auto" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                        <p>Do you want to change the status of the task?</p>
+                        <div class="mx-auto">
+                            <button type="submit" class="btn btn-outline-primary change-status" name="perform_action">Yes</button>
+                            <button type="button mx-auto " class=" close-conf btn btn-outline-danger" data-dismiss="modal">No</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-      </div>
+    </div>
+</div>
+
+<div class="modal fade " id="delete-confirmation" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content popup">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmation</h5>
+                <button type="button" class="close close-conf" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <p>Are you sure you want to delete the task?</p>
+                    <div class="mx-auto">
+                        <button type="submit" class="btn btn-outline-primary del-task" name="perform_action">Yes</button>
+                        <button type="button mx-auto " class=" close-conf btn btn-outline-danger" data-dismiss="modal">No</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% if Edit != None %}
+<div class="modal fade " id="editTask" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content popup">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Task</h5>
+                <button type="button" class="close close-edit" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class='needs-validation' action="/taskBoard?key={{Data.key.urlsafe()}}" method="POST" novalidate>
+                    <div class="form-group">
+                        <div class="form-group row" style="padding-right: 15px;" >
+                            <label for="title" class="col-sm-3 col-form-label">Title</label>
+                            <input type="text" class="form-control col-sm-7 ml-auto" value="{{Edit.title}}" disabled placeholder="Task Name" required min=3 >
+                            <input type="text" value="{{Edit.title}}" name="title" hidden>
+                            <div class='invalid-feedback'>Enter valid Title</div>
+                        </div>
+                        <div class="form-group row" style="padding-right: 15px;">
+                            <label for="dueDate" class="col-sm-3 col-form-label">Due Date</label>
+                            <input class="form-control col-sm-7 ml-auto task-date" type="date"   name="dueDate" max="3000-12-31" min="2020-01-01" required>
+                            <div class='invalid-feedback'>Enter valid Date</div>
+                        </div>
+                        <div class="form-group row" style="padding-right: 15px;" >
+                            <label for="description" class="col-12 col-form-label">Description</label>
+                            <div class="col-12">
+                                <textarea class="col-12 form-control task-desc" name="description" value="{{Edit.description}}" id="description" cols="10" rows="5" required></textarea>
+                            </div>
+                            <div class='invalid-feedback'>Enter valid Description(min 5)</div>
+                        </div>
+                        <div class="form-group row" style="padding-right: 15px;" >
+                            <label for="users" class="col-sm-3 col-form-label">Assigned to</label>
+                            <select name="assigned" id="user" class="form-control col-sm-7 ml-auto">
+                                {% for user in Data.users %}
+                                {% if user.email == Edit.user %}
+                                <option value="{{user.email}}" selected>{{user.email}}</option>
+                                {% else %}
+                                <option value="{{user.email}}" selected>{{user.email}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                            <div class='invalid-feedback'>Enter valid Title</div>
+                        </div>
+                        <div class="form-group row" style="padding-right: 15px;" >
+                            <label for="description" class="col-sm-3 col-form-label">Status</label>
+                            <input type="checkbox" class="col-sm-7 ml-auto form-check-input stat" name='status'>
+                            <div class='invalid-feedback'>Enter valid Description(min 5)</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary" name="perform_action" value = "editTask">Submit</button>
+                    <button type="button" class="btn btn-outline-danger close-edit">Close</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+  </div>
+  {% endif %}
+
+
 
 
     <script src="/bootstrap/js/jquery-3.4.1.min.js"></script>
     <script src="/bootstrap/js/bootstrap.js"></script>
+    <script src="/bootstrap/js/all.js"></script>
     <script>
         var form = document.querySelector('.needs-validation');
 
@@ -277,7 +401,78 @@
             }
             form.classList.add('was-validated');
         });
+
+        function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                vars[key] = value;
+            });
+            return vars;
+        }
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) 
+                month = '0' + month;
+            if (day.length < 2) 
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        $('document').ready(()=>{
+            console.log("{{Edit}}")
+            if('edit-task' in getUrlVars()){
+                $('#editTask').modal()
+                if("{{Edit}}" != 'None'){
+                    $('.task-desc').val("{{Edit.description}}")
+                    date = "{{Edit.due_date}}"
+                    date = new Date(date)
+                    date = formatDate(date)
+                    $('.task-date').val(String(date));
+                    
+                    if("{{Edit.status}}" === 'False'){
+                        $('.stat').prop('checked', false)
+                    }
+                    else{
+                        $('.stat').prop('checked', true)
+                    }
+                }
+            }
+        });
         
+        
+        $('.status-change').on('change',function() {
+            $('#confirmation').modal();
+            task = $(this).val();
+            $('.change-status').click(()=>{
+                window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}&change-status="+task
+            });
+        });
+
+        $('.close-conf').click(()=>{
+            location.reload();
+        });
+
+        $('.close-edit').click(()=>{
+            window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}"
+        });
+
+        $('.edit-task').click(function(){
+            task = $(this).val();
+            window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}&edit-task="+task
+        });
+
+        $('.delete-task').click(function(){
+            $('#delete-confirmation').modal();
+            task = $(this).val();
+            $('.del-task').click(()=>{
+                window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}&delete-task="+task
+            });
+        });
     </script>
 </body>
 </html>

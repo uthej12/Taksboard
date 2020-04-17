@@ -6,6 +6,7 @@ class User(ndb.Model):
 class Task(ndb.Model):
     title = ndb.StringProperty()
     due_date = ndb.DateTimeProperty()
+    completion_date = ndb.DateTimeProperty()
     status = ndb.StringProperty()
     user = ndb.StructuredProperty(User, repeated = False)
     description = ndb.StringProperty()

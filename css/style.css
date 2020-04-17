@@ -98,3 +98,55 @@ body {
 .add-task:hover{
     transform: scale(1.05);
 }
+.popup .modal-header{
+    background-color: #43548c; 
+    color: white;
+    margin-right: -0.5px;
+}
+.popup span{
+    color: white;
+}
+.tasks{
+    margin:auto; 
+    width: 16rem;
+    min-height: 300px; 
+    border-color: #43548c;
+    border-radius: 0;
+    box-shadow: 1px 2px 5px #43548c;
+}
+.tasks .card-header{
+    min-height: 3rem;
+    border-radius: 0;
+    background-color: white;
+}
+.tasks .card-header .card-title{
+    text-transform: capitalize;
+}
+.tasks .card-header .text-muted{
+    font-size: 0.9rem;
+}
+.tasks .card-footer{
+    min-height: 50px;
+    border-radius: 0;
+    background-color: white;
+}
+.tasks .card-body{
+    height: 150px;
+    border-radius: 0;
+    background-color: white;
+}
+.task-container{
+    padding: 30px; 
+    padding-top: 10px;
+    border-right: 1px solid #f3f3f3;
+    border-left: 1px solid #f3f3f3;
+    min-height: 600px;
+}
+
+.tasks .card-body .task-text{
+    color: #43548c; 
+    font-weight: 500;
+    margin-bottom: 2px;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+}

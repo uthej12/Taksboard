@@ -12,7 +12,11 @@
         <div class="row">
             <div class="container heading" >
                 <h1 class="title"><a href = "#">TaskBoard</a></h1>
-                <h5><a href="#">Home</a></h5>
+                {% if user %}
+                <h5><a href="{{logout}}">Logout</a></h5>
+                {% else %}
+                <h5><a href="{{login}}">Login</a></h5>
+                {% endif %}
                 <hr class="my-4">
             </div>
         </div>
