@@ -49,9 +49,10 @@
                         {% for key in boards %}
                             <div class="col-12 col-sm-6" style="margin-bottom: 20px;">
                                 <a href="/taskBoard?key={{key.urlsafe()}}" style="color: #43548c;">
-                                    <div class="card task-board">
+                                    <div class="card task-board dashboard">
                                         <div class="card-body">
                                             <h5 class="card-title">{{ key.get().title }}</h5>
+                                            <hr>
                                             <p class="text-muted">{{key.get().owner.email}}</p>
                                         </div>
                                     </div>

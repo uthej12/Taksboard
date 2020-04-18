@@ -43,7 +43,7 @@
     <div class="container-fluid">
         <div class="row" style="margin: 0px 15px; padding: 10px; background-color: #f3f3f3;">
             <div class="title_bar col-sm-5">
-                <h4 style="font-weight: 400; display: inline;">
+                <h4 style="font-weight: 350; display: inline; font-size: 1.5rem;">
                     {{Data.title}} 
                     <sub class="owner_name">
                         <h6 class="text-muted" style="font-weight: 400; display: inline; font-size: small;">
@@ -55,20 +55,23 @@
             
             <div class="ml-auto mr-0 col-sm-5 title_bar" style="text-align: right;">
                 <div class="ml-auto mr-0">
-                    <button data-toggle="modal" data-target="#details" class="btn btn-outline-primary" style="width: 100px;">Details</button>
                     {% if  name == Data.owner.email %}
-                    <button data-toggle="modal" data-target="#invite" class="btn btn-outline-primary" style="width: 100px;">Invite</button>
+                    <button data-toggle="modal" data-target="#invite" class="btn btn-outline-success"><i class="fas fa-user-plus"></i></button>
                     {% endif %}
+                    <button data-toggle="modal" data-target="#details" class="btn btn-outline-info"><i class="fas fa-lg fa-info-circle"></i></button>
+                    <button data-toggle="modal" data-target="#editOptions" class="btn btn-outline-secondary"><i class="fas fa-edit"></i></button>
                 </div>
             </div>
         </div>
     </div>
+
+
     {% if Error|length > 1 %}
     <div class="container mt-1 mb-0">
       <div class="row" style="width: 100%;text-align: center;">
-          <div class="alert mx-auto alert-danger alert-dismissible fade show" role="alert" style="width: 50%; height: 2rem; padding: 0%;">
+          <div class="alert mx-auto alert-danger alert-dismissible fade show" role="alert" style="width: 50%; height: 2.8rem; padding: 0.5rem;">
               {{Error}}
-              <button type="button" onclick='window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}"' class="close" aria-label="Close" style="padding: 0px 10px;">
+              <button type="button" onclick='window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}"' class="close" aria-label="Close" style="padding: 0.5rem">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -79,9 +82,9 @@
     {% if Success|length > 1 %}
     <div class="container mt-1 mb-0" style="width: 100%;text-align: center;">
       <div class="row">
-          <div class="alert mx-auto alert-success alert-dismissible fade show" role="alert" style="width: 50%; height: 2rem; padding: 0%;">
+          <div class="alert mx-auto alert-success alert-dismissible fade show" role="alert" style="width: 50%; height: 2.8rem; padding: 0.5rem;">
               {{Success}}
-              <button type="button" class="close" onclick='window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}"' aria-label="Close" style="padding: 0px 10px;">
+              <button type="button" class="close" onclick='window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}"' aria-label="Close" style="padding: 0.5rem;">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -98,7 +101,11 @@
         <div class="row" style="padding-top: 30px; width: 100%;">
             {% for task in Data.tasks %}
             <div class="col-lg-4 col-sm-12 col-md-6 my-3">
+                {% if task.user == None %}
+                <div class="card tasks no-user">
+                {% else %}
                 <div class="card tasks">
+                {% endif %}
                     <div class="card-header">
                         <h5 class="card-title">{{ task.title }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{task.user.email}}</h6>
@@ -131,9 +138,9 @@
                             </a>
                             {% endif %}
                         </div>
-                        <div  style="display: inline; margin-left: 5rem;">
-                            <button class="btn btn-outline-secondary edit-task" value="{{task.title}}"><i class="fas fa-xs fa-edit"></i></button>
-                            <button class="btn btn-outline-danger delete-task" value ="{{task.title}}"><i class="far fa-xs fa-trash-alt"></i></button>
+                        <div  style="display: inline; margin-left: 4.5rem;">
+                            <button class="btn btn-info edit-task" value="{{task.title}}"><i class="fas fa-sm fa-edit"></i></button>
+                            <button class="btn btn-danger delete-task" value ="{{task.title}}"><i class="far fa-sm fa-trash-alt"></i></button>
                         </div>
                     </div>
                   </div>
@@ -201,6 +208,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" data-toggle="modal" data-dismiss="modal" data-target="#editBoard" class="btn btn-info">Edit</button>
         </div>
       </div>
     </div>
@@ -225,7 +233,7 @@
                             </div>
                             <div class="form-group row" style="padding-right: 15px;">
                                 <label for="dueDate" class="col-sm-3 col-form-label">Due Date</label>
-                                <input class="form-control col-sm-7 ml-auto" type="date" name="dueDate" max="3000-12-31" min="2020-01-01" required>
+                                <input class="form-control col-sm-7 ml-auto date-set" type="date" name="dueDate" max="3000-12-31" required>
                                 <div class='invalid-feedback'>Enter valid Date</div>
                             </div>
                             <div class="form-group row" style="padding-right: 15px;" >
@@ -242,7 +250,7 @@
                                     <option value="{{user.email}}">{{user.email}}</option>
                                     {% endfor %}
                                 </select>
-                                <div class='invalid-feedback'>Enter valid Title</div>
+                                <div class='invalid-feedback'>Enter valid user</div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-outline-primary" name="perform_action" value = "Add">Submit</button>
@@ -346,7 +354,7 @@
                         </div>
                         <div class="form-group row" style="padding-right: 15px;">
                             <label for="dueDate" class="col-sm-3 col-form-label">Due Date</label>
-                            <input class="form-control col-sm-7 ml-auto task-date" type="date"   name="dueDate" max="3000-12-31" min="2020-01-01" required>
+                            <input class="form-control col-sm-7 ml-auto task-date date-set" type="date"   name="dueDate" max="3000-12-31" min="2020-01-01" required>
                             <div class='invalid-feedback'>Enter valid Date</div>
                         </div>
                         <div class="form-group row" style="padding-right: 15px;" >
@@ -363,7 +371,7 @@
                                 {% if user.email == Edit.user %}
                                 <option value="{{user.email}}" selected>{{user.email}}</option>
                                 {% else %}
-                                <option value="{{user.email}}" selected>{{user.email}}</option>
+                                <option value="{{user.email}}">{{user.email}}</option>
                                 {% endif %}
                                 {% endfor %}
                             </select>
@@ -384,6 +392,91 @@
     </div>
   </div>
   {% endif %}
+
+  <div class="modal fade " id="editBoard" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content popup">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Taskboard Name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class='needs-validation' action="/taskBoard?key={{Data.key.urlsafe()}}" method="POST" novalidate>
+                    <div class="form-group">
+                        <div class="form-group row" style="padding-right: 15px;" >
+                            <label for="invite_user" class="col-sm-3 col-form-label">TaskBoard Name</label>
+                            <input type="text" class="form-control col-sm-7 ml-auto" id="taskboardName" name="taskboardName" value="{{Data.title}}" min=3 required>
+                            <div class='invalid-feedback'>Enter valid name</div>
+                        </div>
+                    <button type="submit" class="btn btn-outline-primary" name="perform_action" value = "editBoard">Submit</button>
+                    <button type="button mx-auto" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="modal fade " id="editOptions" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content popup">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Edit Option</h5>
+                <button type="button" class="close close-conf" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body container">
+                <div class="row">
+                    <button type="submit" data-toggle="modal" data-dismiss="modal" data-target="#editBoard" class="btn btn-outline-primary mx-auto" name="perform_action">Change TaskBoard Name</button>
+                </div>
+                {% if name == Data.owner.email %}
+                <div class="row mt-4">
+                    <button type="button" data-toggle="modal" data-dismiss="modal" data-target="#editUsers" class="btn btn-outline-danger mx-auto">Remove User from taskboard</button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary mx-auto" data-dismiss="modal">Close</button>
+              </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div class="modal fade " id="editUsers" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content popup">
+            <div class="modal-header">
+                <h5 class="modal-title">Remove Users from TaskBoard</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class='needs-validation' action="/taskBoard?key={{Data.key.urlsafe()}}" method="POST" novalidate>
+                    <div class="form-group row" style="padding-right: 15px;" >
+                        <label for="users" class="col-sm-3 col-form-label">Users in board</label>
+                        <select name="user" id="user" class="form-control col-sm-7 ml-auto">
+                            {% for user in Data.users %}
+                                {% if user.email != Data.owner.email %}
+                                <option value="{{user.email}}">{{user.email}}</option>
+                                {% endif %}
+                                {% endfor %}
+                        </select>
+                        <div class='invalid-feedback'>Enter valid user</div>
+                    </div>
+                    <button type="submit" class="btn btn-outline-danger" name="perform_action" value = "editUsers">Remove</button>
+                    <button type="button mx-auto" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 
 
 
@@ -424,7 +517,6 @@
         }
 
         $('document').ready(()=>{
-            console.log("{{Edit}}")
             if('edit-task' in getUrlVars()){
                 $('#editTask').modal()
                 if("{{Edit}}" != 'None'){
@@ -442,6 +534,10 @@
                     }
                 }
             }
+
+            date = new Date();
+            date = formatDate(date);
+            $('.date-set').attr('min',date)
         });
         
         

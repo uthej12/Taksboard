@@ -81,7 +81,7 @@ body {
 }
 .task-board:hover{
     transform: scale(1.05); 
-    border: 2px solid #43548c;
+    border: 3px solid #43548c;
     color: #5F9EA0;       
 }
 .footer {
@@ -131,7 +131,7 @@ body {
     background-color: white;
 }
 .tasks .card-body{
-    height: 150px;
+    min-height: 170px;
     border-radius: 0;
     background-color: white;
 }
@@ -150,3 +150,13 @@ body {
     margin-top: 1.5rem;
     font-size: 0.85rem;
 }
+.dashboard{
+    background-color: white;
+    border-radius: 0;
+    box-shadow: 1px 4px 5px #43548c;
+    border: 2px solid #43548c;
+}
+
+.no-user .card-header{background-color: rgba(255, 0, 0, 0.6);}
+.no-user .card-body{background-color: rgba(255, 0, 0, 0.6);; }
+.no-user .card-footer{background-color: rgba(255, 0, 0, 0.6);}

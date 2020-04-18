@@ -36,8 +36,10 @@ class taskBoard(webapp2.RequestHandler):
             'Edit':None
         }
 
+        #Handel Status Change
         if len(self.request.get('change-status')) > 0:
-            task_key = ndb.Key(Task, self.request.get('change-status'))
+            task_key =self.request.get('change-status')+'|'+taskBoard.key.urlsafe()
+            task_key = ndb.Key(Task, task_key)
             task = task_key.get()
 
             if task.status == 'False':
@@ -59,8 +61,10 @@ class taskBoard(webapp2.RequestHandler):
             board_key = taskBoard.put()
             self.redirect('/taskBoard?key='+board_key.urlsafe()+"&success=Changed status successfully")
         
+        #Handel delete requets
         if len(self.request.get('delete-task')) > 0:
-            task_key = ndb.Key(Task, self.request.get('delete-task'))
+            task_key =self.request.get('delete-task')+'|'+taskBoard.key.urlsafe()
+            task_key = ndb.Key(Task, task_key)
             task = task_key.get()
             
             for t in taskBoard.tasks:
@@ -102,6 +106,7 @@ class taskBoard(webapp2.RequestHandler):
                 'Data':taskBoard
             }
 
+
         if len(self.request.get('error')) > 1:
             template_values['Error'] = self.request.get('error')
 
@@ -109,7 +114,8 @@ class taskBoard(webapp2.RequestHandler):
             template_values['Success'] = self.request.get('success')
 
         if len(self.request.get('edit-task')) > 0:
-            task_key = ndb.Key(Task, self.request.get('edit-task'))
+            task_key =self.request.get('edit-task')+'|'+taskBoard.key.urlsafe()
+            task_key = ndb.Key(Task, task_key)
             task = task_key.get()
             template_values['Edit'] = task
             #self.response.write(template_values)
@@ -133,10 +139,12 @@ class taskBoard(webapp2.RequestHandler):
             date = datetime.datetime.strptime(date, '%Y-%m-%d')
             description = self.request.get('description')
             user = ndb.Key(User, self.request.get('user')).get()
-            task_key = ndb.Key(Task, title)
+            
+            task_key =title+'|'+board.urlsafe()
+            task_key = ndb.Key(Task, task_key)
             
             if task_key.get() == None:
-                new_task = Task(id=title)
+                new_task = Task(id=str(title+'|'+board.urlsafe()))
                 new_task.title = title
                 new_task.due_date = date
                 new_task.status = 'False'
@@ -172,10 +180,7 @@ class taskBoard(webapp2.RequestHandler):
                     self.redirect('/taskBoard?key='+self.request.get('key')+'&success=Successfully added '+user.email+' to Board')
                 else:
                     self.redirect('/taskBoard?key='+self.request.get('key')+'&error=User already present in taskboard')
-        
-        if button == 'change-status':
-            self.response.write('Yess')
-            self.response.write(self.request.get('toggle'))
+
 
         if button == 'editTask':
             board = ndb.Key(urlsafe=self.request.get('key'))
@@ -194,7 +199,8 @@ class taskBoard(webapp2.RequestHandler):
             self.response.write(status)
 
             user = ndb.Key(User, assigned).get()
-            task_key = ndb.Key(Task, title)
+            task_key =title+'|'+board.urlsafe()
+            task_key = ndb.Key(Task, task_key)
             
             if task_key.get() == None:
                 self.redirect('/taskBoard?key='+self.request.get('key')+'&error=Sorry some error occured')
@@ -239,9 +245,45 @@ class taskBoard(webapp2.RequestHandler):
                                 t.status = 'False'
                                 t.completion_date = None
 
-                    t.description = description
-                    t.user = user
+                        t.description = description
+                        t.user = user
                 board.put()
                         
                 board_key = board.put()
                 self.redirect('/taskBoard?key='+self.request.get('key')+'&success=Task Edited Successfully')
+
+            
+        if button == 'editBoard':
+            board = ndb.Key(urlsafe=self.request.get('key'))
+            name = self.request.get('taskboardName')
+            board = board.get()
+            if name == board.title:
+                self.redirect('/taskBoard?key='+board_key.urlsafe())
+            else:
+                board.title = name
+                board_key  = board.put()       
+                self.redirect('/taskBoard?key='+board_key.urlsafe()+'&success=TaskBoard Name changed successfully')
+
+        if button == 'editUsers':
+            board_key = ndb.Key(urlsafe=self.request.get('key'))
+            name = self.request.get('user')
+            user_key = ndb.Key(User, name)
+            user = user_key.get()
+            board = board_key.get()
+
+            for u in board.users:
+                if u.email == user.email:
+                    board.users.remove(u)
+            if board_key.urlsafe() in user.boards:
+                user.boards.remove(board_key.urlsafe())
+            user.put()
+            for task in board.tasks:
+                if task.user.email == user.email:
+                    name = task.title+'|'+(board.key.urlsafe())
+                    t = ndb.Key(Task, name).get()
+                    t.user = None
+                    task.user = None
+                    t.put()
+            board.put()
+            self.redirect('/taskBoard?key='+board_key.urlsafe()+'&success= '+user.email+' Successfully removed from '+board.title)
+            
