@@ -60,6 +60,13 @@
                     {% endif %}
                     <button data-toggle="modal" data-target="#details" class="btn btn-outline-info"><i class="fas fa-lg fa-info-circle"></i></button>
                     <button data-toggle="modal" data-target="#editOptions" class="btn btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    {% if  name == Data.owner.email %}
+                    {% if Data.users | length == 1  and Data.tasks | length ==0 %}
+                    <button data-toggle="modal" data-target="#deleteBoard" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                    {% else %}
+                    <button data-toggle="modal" data-toggle="tooltip" title="Remove all users and Tasks to Delete TaskBoard" class="btn btn-outline-danger" disabled><i class="fas fa-trash-alt"></i></button>
+                    {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -186,10 +193,34 @@
             </div>
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    Number of tasks
+                    Total Number of tasks
                 </div>
                 <div class="col-12 col-sm-6">
                     <p style="color: #43548c;">{{Data.tasks | length}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    Active Tasks
+                </div>
+                <div class="col-12 col-sm-6">
+                    <p style="color: #43548c;">{{tasks_active}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    Completed Tasks
+                </div>
+                <div class="col-12 col-sm-6">
+                    <p style="color: #43548c;">{{tasks_completed}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    Tasks Completed Today
+                </div>
+                <div class="col-12 col-sm-6">
+                    <p style="color: #43548c;">{{tasks_completed_todaay}}</p>
                 </div>
             </div>
             <div class="row">
@@ -478,6 +509,26 @@
 </div>
 </div>
 
+<div class="modal fade " id="deleteBoard" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content popup">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Board</h5>
+                    <button type="button" class="close close-conf" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <p>Are you sure you want to delete the TaskBoard {{Data.title}}</p>
+                            <button type="submit" class="btn btn-outline-danger delete-taskboard" name="perform_action">Yes</button>
+                            <button type="button mx-auto " class=" close-conf btn btn-outline-secondary" data-dismiss="modal">No</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -555,6 +606,10 @@
 
         $('.close-edit').click(()=>{
             window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}"
+        });
+
+        $('.delete-taskboard').click(()=>{
+            window.location.href = "/taskBoard?key={{Data.key.urlsafe()}}&Delete=true"
         });
 
         $('.edit-task').click(function(){

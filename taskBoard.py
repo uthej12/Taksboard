@@ -36,6 +36,7 @@ class taskBoard(webapp2.RequestHandler):
             'Edit':None
         }
 
+
         #Handel Status Change
         if len(self.request.get('change-status')) > 0:
             task_key =self.request.get('change-status')+'|'+taskBoard.key.urlsafe()
@@ -77,6 +78,16 @@ class taskBoard(webapp2.RequestHandler):
         if user:
             nickname = user.nickname()
 
+            #Handel Delete TaskBoard
+            if len(self.request.get('Delete')) > 0:
+                user_key = ndb.Key(User, nickname)
+                user = user_key.get()
+                if taskBoard.key.urlsafe() in user.boards:
+                    user.boards.remove(taskBoard.key.urlsafe())
+                user.put()
+                taskBoard.key.delete()
+                self.redirect('/dashboard')
+                
             key = ndb.Key(User, nickname)
             if key.get() == None:
                 new = User(id=nickname,email=nickname)
@@ -121,6 +132,22 @@ class taskBoard(webapp2.RequestHandler):
             #self.response.write(template_values)
         else:
             template_values['Edit'] = None
+
+        completed = 0
+        active = 0
+        completed_today = 0
+        for task in taskBoard.tasks:
+            if task.status == 'False':
+                active+=1
+            else:
+                if task.completion_date.date() == datetime.datetime.now().date():
+                    completed_today +=1
+                    completed +=1
+                else:
+                    completed +=1
+        template_values['tasks_completed'] = completed
+        template_values['tasks_completed_todaay'] = completed_today
+        template_values['tasks_active'] = active
 
         template = JINJA_ENVIRONMENT.get_template('taskBoard.html')
         self.response.write(template.render(template_values))
